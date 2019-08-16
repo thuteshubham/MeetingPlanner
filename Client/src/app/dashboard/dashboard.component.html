@@ -1,0 +1,132 @@
+<div class="row text-center">
+  <div class="col-md-4">
+    <div class="btn-group">
+      <div
+        class="btn btn-primary"
+        mwlCalendarPreviousView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()"
+      >
+        Previous
+      </div>
+      <div
+        class="btn btn-outline-secondary"
+        mwlCalendarToday
+        [(viewDate)]="viewDate"
+      >
+        Today
+      </div>
+      <div
+        class="btn btn-primary"
+        mwlCalendarNextView
+        [view]="view"
+        [(viewDate)]="viewDate"
+        (viewDateChange)="closeOpenMonthViewDay()"
+      >
+        Next
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+  </div>
+  <div class="col-md-4">
+    <div class="btn-group">
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Month)"
+        [class.active]="view === CalendarView.Month"
+      >
+        Month
+      </div>
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Week)"
+        [class.active]="view === CalendarView.Week"
+      >
+        Week
+      </div>
+      <div
+        class="btn btn-primary"
+        (click)="setView(CalendarView.Day)"
+        [class.active]="view === CalendarView.Day"
+      >
+        Day
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+<div [ngSwitch]="view">
+  <mwl-calendar-month-view
+    *ngSwitchCase="CalendarView.Month"
+    [viewDate]="viewDate"
+    [events]="events"
+    [refresh]="refresh"
+    [activeDayIsOpen]="activeDayIsOpen"
+    (dayClicked)="dayClicked($event.day, content)"
+    (eventClicked)="handleEvent('Clicked', $event.event, content)"
+    (eventTimesChanged)="eventTimesChanged($event)"
+  >
+  </mwl-calendar-month-view>
+  <mwl-calendar-week-view
+    *ngSwitchCase="CalendarView.Week"
+    [viewDate]="viewDate"
+    [events]="events"
+    [refresh]="refresh"
+    (eventClicked)="handleEvent('Clicked', $event.event,content)"
+    (eventTimesChanged)="eventTimesChanged($event)"
+  >
+  </mwl-calendar-week-view>
+  <mwl-calendar-day-view
+    *ngSwitchCase="CalendarView.Day"
+    [viewDate]="viewDate"
+    [events]="events"
+    [refresh]="refresh"
+    (eventClicked)="handleEvent('Clicked', $event.event,content)"
+    (eventTimesChanged)="eventTimesChanged($event)"
+  >
+  </mwl-calendar-day-view>
+</div>
+
+<!-- Everything you see below is just for the demo, you don't need to include it in your app -->
+
+<br /><br /><br />
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="add-event">{{!isAdmin? 'View': ( mode === 'ADD'? 'Add': 'Edit')}} Event</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+      <div class="form-group">
+        <label for="name">Title: </label> <span class="data" *ngIf="!isAdmin"> {{title}}</span>
+        <input type="text" class="form-control" name="title" [(ngModel)]="title" placeholder="title" required *ngIf="isAdmin">
+      </div>
+      <div class="form-group">
+        <label for="alterEgo">Description:</label> <span class="data" *ngIf="!isAdmin"> {{description}}</span>
+        <input type="text" class="form-control" name="description" [(ngModel)]="description" placeholder="description" *ngIf="isAdmin">
+      </div>
+      <div class="form-group">
+        <label for="alterEgo">Date :</label> <span class="data"> {{ viewDate | date }}   </span>
+      </div>
+      <div class="form-group">
+        <label for="alterEgo">Start time:</label> <span class="data" *ngIf="!isAdmin"> {{startTime}}</span>
+         <input class="form-control" type="time" name="startTime" [(ngModel)]="startTime" placeholder="startTime" *ngIf="isAdmin">
+      </div>
+      <div class="form-group">
+        <label for="alterEgo">End Date:</label> <span class="data" *ngIf="!isAdmin"> {{endTime}}</span>
+        <input class="form-control" type="time" name="endTime" [(ngModel)]="endTime" placeholder="endTime" *ngIf="isAdmin">
+      </div>
+  </div>
+  <div class="modal-footer" *ngIf="isAdmin">
+    <button type="button" class="btn btn-outline-primary" (click)="modal.close('cancel click')">cancel</button>
+    <button type="submit" class="btn btn-outline-dark" (click)="organizeMeeting(modal.close)" *ngIf="mode === 'ADD'">Save</button>
+    <button type="submit" class="btn btn-outline-dark" (click)="updateMeeting(modal.close)"  *ngIf="mode === 'EDIT'">Update</button>
+    <button type="submit" class="btn btn-outline-dark" (click)="deleteMeeting(modal.close)">Delete</button>
+    
+  </div>
+</ng-template>
+
