@@ -7,12 +7,17 @@ const validateInput = require('../libs/paramsValidationLib')
 const check = require('../libs/checkLib')
 const passwordLib = require('./../libs/generatePasswordLib');
 const token = require('../libs/tokenLib');
+const nodeMailer=require('../libs/mailTriggered');
+const setRouter=require('./../routes/user');
+const express=require('express')
+const app=express();
+
+
 
 /* Models */
 const UserModel = mongoose.model('User');
 const AuthModel=mongoose.model('Auth');
 const UserMeetingModel=mongoose.model('Meeting');
-
 
 
 
@@ -27,61 +32,12 @@ let getAllUser=(req,res)=>{
             logger.error(err.message, 'User Controller: getAllUser', 10)
             let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
             res.send(apiResponse)
-
         }
-        
-        else{
-            let apiResponse = response.generate(false, 'All User Details Found', 200, result)
-                res.send(result)
-
-        }
-    })
-}
-
-let getAllEvents=(req,res)=>{
-    let userId = req.query.userId;
-    UserMeetingModel.find({userId})
-    .select('-_id -__v')
-    .lean()
-    .exec((err,result)=>{
-        if(err){
-            console.log(err);
-            logger.error(err.message, 'User Controller: getAllEvents', 10);
-            let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null);
-            res.send(apiResponse);
-        }
-        
         else{
             let apiResponse = response.generate(false, 'All User Details Found', 200, result);
-                res.send(apiResponse);
-
+            res.send(result);
         }
     })
-}
-
-
-
-//delete event
-let deleteMeeting = (req, res) => {
-
-    UserMeetingModel.findOneAndRemove({ 'eventId': req.body.meetingId}).
-    exec((err, result) => {
-        if (err) {
-            console.log(err)
-            logger.error(err.message, 'User Controller: deleteMeeting()', 10);
-            let apiResponse = response.generate(true, 'Failed To delete meeting', 500, null);
-            res.send(apiResponse);
-        } else if (check.isEmpty(result)) {
-            logger.info('No User Found', 'User Controller: deleteUser')
-            let apiResponse = response.generate(true, 'No meeting found', 404, null)
-            res.send(apiResponse)
-        } else {
-            let apiResponse = response.generate(false, 'Deleted meeting successfully', 200, result)
-            res.send(apiResponse)
-        }
-    });// end user model find and remove
-
-
 }
 
 
@@ -97,14 +53,15 @@ let getSingleUser = (req, res) => {
                 let apiResponse = response.generate(true, 'Failed To Find User Details', 500, null)
                 res.send(apiResponse)
             } else if (check.isEmpty(result)) {
-                logger.info('No User Found', 'User Controller:getSingleUser')
-                let apiResponse = response.generate(true, 'No User Found', 404, null)
-                res.send(apiResponse)
+                logger.info('No User Found', 'User Controller:getSingleUser');
+                let apiResponse = response.generate(true, 'No User Found', 404, null);
+                res.send(apiResponse);
             } else {
-                let apiResponse = response.generate(false, 'User Details Found', 200, result)
-                res.send(apiResponse)
+                let apiResponse = response.generate(false, 'User Details Found', 200, result);
+                res.send(apiResponse);
+                
             }
-        })
+        });
 }
 
 
@@ -404,58 +361,6 @@ let loginFunction = (req, res) => {
 
 //Add Meeting
 
-let addMeeting=(req,res)=>{
-    console.log("Adding meeting");
-    console.log(req.body);
-    let newMeeting=new UserMeetingModel({
-        eventId:shortid.generate(),
-        title:req.body.title,
-        description:req.body.description,
-        startTime:req.body.startTime,
-        endTime:req.body.endTime,
-        userId: req.body.userId,
-   
-    });
-    console.log(newMeeting);
-    newMeeting.save((err,meetingOrganized)=>{
-        if(err){
-            console.log(err);
-            logger.error(err.message,'userrController:addMeeting()',7);
-            apiResponse=response.generate(true,'failed to create meeting',500,null)
-            res.send(apiResponse)
-        }
-        else{
-            console.log(meetingOrganized);
-            apiResponse=response.generate(false,`meeting scheduled at${req.body.startTime}`,200,meetingOrganized);
-            res.send(apiResponse);
-
-        }
-
-    })
-
-
-
-}
-
-let updateMeeting=(req,res)=>{
-    let options = req.body;
-    UserMeetingModel.update({ 'eventId': req.query.meetingId }, options).exec((err, result) => {
-        if (err) {
-            console.log(err);
-            logger.error(err.message, 'User Controller:editMeeting', 10);
-            let apiResponse = response.generate(true, 'Failed To edit user details', 500, null);
-            res.send(apiResponse)
-        } else if (check.isEmpty(result)) {
-            logger.info('No Meeting Found', 'User Controller: editMeeting');
-            let apiResponse = response.generate(true, 'No Meeting Found', 404, null);
-            res.send(apiResponse);
-        } else {
-            let apiResponse = response.generate(false, 'Meeting details edited', 200, result);
-            res.send(apiResponse);
-        }
-    });
-
-}
 
 
 let logout = (req, res) => {
@@ -471,10 +376,7 @@ module.exports = {
     editUser:editUser,
     signUpFunction: signUpFunction,
     loginFunction: loginFunction,
-    addMeeting:addMeeting,
     logout: logout,
-    getAllEvents: getAllEvents,
-    deleteMeeting: deleteMeeting,
-    updateMeeting: updateMeeting
+
 
 }// end exports

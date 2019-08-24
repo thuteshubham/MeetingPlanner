@@ -1,3 +1,11 @@
+<nav class="navbar navbar-dark bg-dark" style="margin-bottom: 10px">
+    <a class="navbar-brand" href="#">
+        Meeting Schedular
+    </a>
+    <button type="button" class="btn btn-outline-primary float-right" (click)="signOff()" >Log Out</button>
+</nav>
+<div class="container">
+
 <div class="row text-center">
   <div class="col-md-4">
     <div class="btn-group">
@@ -100,33 +108,39 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="modal-body">
-      <div class="form-group">
-        <label for="name">Title: </label> <span class="data" *ngIf="!isAdmin"> {{title}}</span>
-        <input type="text" class="form-control" name="title" [(ngModel)]="title" placeholder="title" required *ngIf="isAdmin">
-      </div>
-      <div class="form-group">
-        <label for="alterEgo">Description:</label> <span class="data" *ngIf="!isAdmin"> {{description}}</span>
-        <input type="text" class="form-control" name="description" [(ngModel)]="description" placeholder="description" *ngIf="isAdmin">
-      </div>
-      <div class="form-group">
-        <label for="alterEgo">Date :</label> <span class="data"> {{ viewDate | date }}   </span>
-      </div>
-      <div class="form-group">
-        <label for="alterEgo">Start time:</label> <span class="data" *ngIf="!isAdmin"> {{startTime}}</span>
-         <input class="form-control" type="time" name="startTime" [(ngModel)]="startTime" placeholder="startTime" *ngIf="isAdmin">
-      </div>
-      <div class="form-group">
-        <label for="alterEgo">End Date:</label> <span class="data" *ngIf="!isAdmin"> {{endTime}}</span>
-        <input class="form-control" type="time" name="endTime" [(ngModel)]="endTime" placeholder="endTime" *ngIf="isAdmin">
-      </div>
-  </div>
+  <form   #form1="ngForm">
+
+    <div class="modal-body">
+        <div class="form-group">
+          <label for="name">Title: </label> <span class="data" *ngIf="!isAdmin"> {{title}}</span>
+          <input type="text" class="form-control" name="meetingTitle" [(ngModel)]="title"  #meetingTitle="ngModel" placeholder="title"  *ngIf="isAdmin" required>
+  
+        </div>
+        <div class="form-group">
+          <label for="alterEgo">Description:</label> <span class="data" *ngIf="!isAdmin"> {{description}}</span>
+          <input type="text" class="form-control" name="description" [(ngModel)]="description" placeholder="description" required="required" *ngIf="isAdmin">
+        </div>
+        <div class="form-group">
+          <label for="alterEgo">Date :</label> <span class="data"> {{ viewDate | date }}   </span>
+        </div>
+        <div class="form-group">
+          <label for="alterEgo">Start time:</label> <span class="data" *ngIf="!isAdmin"> {{startTime}}</span>
+          <input class="form-control" type="time" min="09:00" max="18:00" name="startTime" [(ngModel)]="startTime" placeholder="startTime" required="required" *ngIf="isAdmin">
+        </div>
+        <div class="form-group">
+          <label for="alterEgo">End Date:</label> <span class="data" *ngIf="!isAdmin"> {{endTime}}</span>
+          <input class="form-control" type="time" name="endTime" [(ngModel)]="endTime" placeholder="endTime" required="required" *ngIf="isAdmin">
+        </div>
+      
+    </div>
   <div class="modal-footer" *ngIf="isAdmin">
     <button type="button" class="btn btn-outline-primary" (click)="modal.close('cancel click')">cancel</button>
-    <button type="submit" class="btn btn-outline-dark" (click)="organizeMeeting(modal.close)" *ngIf="mode === 'ADD'">Save</button>
+    <button type="submit" class="btn btn-outline-dark" (click)="organizeMeeting(modal.close)" [disabled]="form1.invalid" *ngIf="mode === 'ADD'">Save</button>
     <button type="submit" class="btn btn-outline-dark" (click)="updateMeeting(modal.close)"  *ngIf="mode === 'EDIT'">Update</button>
     <button type="submit" class="btn btn-outline-dark" (click)="deleteMeeting(modal.close)">Delete</button>
     
   </div>
+</form>
 </ng-template>
 
+</div>

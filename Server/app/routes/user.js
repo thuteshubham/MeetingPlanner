@@ -13,17 +13,11 @@ setRouter = (app) => {
 
     app.get(`${baseUrl}/all`,userController.getAllUser);
 
-    app.post(`${baseUrl}/addMeeting`,userController.addMeeting);
-
-    app.post(`${baseUrl}/deleteMeeting`,userController.deleteMeeting);
-    app.put(`${baseUrl}/updateMeeting`,userController.updateMeeting);
 
     app.post(`${baseUrl}/deleteUser`,userController.deleteUser);
 
 
-    app.get(`${baseUrl}/:userId/view`,userController.getSingleUser);
-
-    app.get(`${baseUrl}/getAllEvents`,userController.getAllEvents);
+    app.get(`${baseUrl}/:userId/view`,userController.getSingleUser); 
     
 
     // params: firstName, lastName, email, mobileNumber, password

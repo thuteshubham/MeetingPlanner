@@ -16,6 +16,7 @@ export class AppService {
   getEventDataUrl="http://127.0.0.1:3002/api/v1/users/getAllEvents";
   deleteMeetingUrl="http://127.0.0.1:3002/api/v1/users/deleteMeeting";
   updateMeetingUrl="http://127.0.0.1:3002/api/v1/users/updateMeeting";
+  resetLink="http://127.0.0.1:3002/api/v1/users/updateMeeting";
 
   
   
@@ -49,6 +50,13 @@ export class AppService {
 
   getEventData(userId):Observable<any>{
     return this.http.get(this.getEventDataUrl + "?" + "userId=" + userId)
+  }
+
+
+  public sendResetLink(email): Observable<any> {
+    
+      
+    return this.http.post(`${this.resetLink}`, email);
   }
 
 

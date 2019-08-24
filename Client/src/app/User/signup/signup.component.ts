@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {User} from './../user'
 import {AppService} from './../../app.service';
-import {Router} from '@angular/router'
+import {Router} from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -20,16 +21,16 @@ export class SignupComponent implements OnInit {
   users:User[];
 
   constructor(private appService:AppService,
-    private router: Router) { }
+    private router: Router, private toastr: ToastrService) { }
 
-  async getAllUsers(){
-    await this.appService.getUsers()
-    .subscribe(response=>{
-      console.log(response)
-      this.users=response
-    })
+  // async getAllUsers(){
+  //   await this.appService.getUsers()
+  //   .subscribe(response=>{
+  //     console.log(response)
+  //     this.users=response
+  //   })
     
-  }
+  // }
 
 
   async signUpFunction(){
@@ -44,9 +45,11 @@ export class SignupComponent implements OnInit {
 
     await this.appService.signUp(data)
     .subscribe(response=>{
-      console.log(response)
+      console.log(response);
       if(response.status===200){
-        alert('signUp Succeffull');
+        this.toastr.toastrConfig.timeOut=5000;
+        this.toastr.success('Account succesfully created');
+        this.router.navigate(['/login']);
        
      }
      });
@@ -54,7 +57,7 @@ export class SignupComponent implements OnInit {
 
 
   ngOnInit() {
-    this.getAllUsers()
+  //  this.getAllUsers()
   }
 
   navigateToLogin(){

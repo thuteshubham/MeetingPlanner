@@ -57,6 +57,7 @@ export class DashboardComponent implements OnInit{
   constructor(
     private modalService: NgbModal,
     private appService:AppService,
+    private router: Router,
     private route: ActivatedRoute) {
            
     }
@@ -106,7 +107,7 @@ export class DashboardComponent implements OnInit{
         this.description = "";
         this.startTime = "";
         this.endTime = "";
-        this.mode = "READ";
+        this.mode = "ADD";
         this.openAddModel(content);
       } else {
         this.activeDayIsOpen = true;
@@ -220,13 +221,13 @@ export class DashboardComponent implements OnInit{
       endTime: this.viewDate.toDateString()+" "+this.endTime,
       userId: this.userId
     }
-    await this.appService.setMeeting(data)
+      await this.appService.setMeeting(data)
     .subscribe((response)=> {
       if(response.status===200){
         this.bindCalendarEvents(this.userId);
         closeModal(response.message);
       }
-    })
+    });   
   }
 
   async updateMeeting(closeModal){
@@ -270,6 +271,12 @@ export class DashboardComponent implements OnInit{
       }
     })
     
+  }
+  
+  signOff() {
+    Cookie.delete('AuthToken');
+    Cookie.delete('userId');
+    this.router.navigate(['/login']);
   }
   
 }

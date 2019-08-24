@@ -23,9 +23,6 @@ app.use(globalErrorMiddleware.globalErrorHandler);
 
 app.use(express.static(path.join(__dirname, 'client')));
 
-
-
-
 const modelsPath = './app/models';
 const controllersPath = './app/controllers';
 const libsPath = './app/libs';
@@ -75,10 +72,10 @@ server.on('listening', onListening);
 
 
 // socket io connection handler 
-/*
+
 const socketLib = require("./app/libs/socketLib");
 const socketServer = socketLib.setServer(server);
-*/
+app.io = socketServer;
 
 // end socketio connection handler
 

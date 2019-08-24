@@ -34,6 +34,10 @@ export class AllUserComponent implements OnInit {
     this.router.navigate(['/dashboard'], { queryParams: {"userId": userId} } );
    
   }
-  
+  signOff() {
+    Cookie.delete('AuthToken');
+    Cookie.delete('userId');
+    this.router.navigate(['/login']);
+  }
   
 }

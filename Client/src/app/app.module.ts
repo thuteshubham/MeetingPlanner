@@ -7,6 +7,7 @@ import { UserModule } from './User/user.module';
 import { AppService } from './app.service';
 import {FormsModule} from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrModule } from 'ngx-toastr';
 
 
 import {RouterModule, Router} from '@angular/router';
@@ -24,7 +25,8 @@ import {DashboardModule} from './dashboard/dashboard.module';
     UserModule,
     FormsModule,
     DashboardModule,
-    NgbModule
+    NgbModule,
+    ToastrModule.forRoot()
   ],
   providers: [AppService],
   bootstrap: [AppComponent]
